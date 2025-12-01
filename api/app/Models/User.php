@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function pontosCriados()
+    {
+        return $this->hasMany(PontoTuristico::class, 'criado_por');
+    }
+
+    public function avaliacoes()
+    {
+        return $this->hasMany(Avaliacao::class, 'usuario_id');
+    }
+
 }
