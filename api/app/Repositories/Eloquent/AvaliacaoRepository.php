@@ -11,4 +11,10 @@ class AvaliacaoRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+    public function findByUserAndPonto(int $userId, int $pontoId)
+    {
+        return Avaliacao::where('usuario_id', $userId)
+            ->where('ponto_id', $pontoId)
+            ->first();
+    }
 }
