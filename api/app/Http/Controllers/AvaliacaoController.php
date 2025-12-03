@@ -11,6 +11,11 @@ class AvaliacaoController extends Controller
         private AvaliacaoService $service
     ) {}
 
+    public function index()
+    {
+        return response()->json($this->service->paginate());
+    }
+
     public function store(AvaliacaoRequest $request)
     {
         return response()->json(

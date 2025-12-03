@@ -11,6 +11,11 @@ class HospedagemController extends Controller
         private HospedagemService $service
     ) {}
 
+    public function index()
+    {
+        return response()->json($this->service->paginate());
+    }
+    
     public function store(HospedagemRequest $request)
     {
         return response()->json(

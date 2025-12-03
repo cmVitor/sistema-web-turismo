@@ -62,4 +62,9 @@ class AvaliacaoService
 
         return true;
     }
+
+    public function paginate($perPage = 10)
+    {
+        return $this->repo->paginate($perPage);
+    }
 }

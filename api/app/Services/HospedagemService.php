@@ -15,6 +15,11 @@ class HospedagemService
         return $this->repo->create($data);
     }
 
+    public function paginate($perPage = 10)
+    {
+        return $this->repo->paginate($perPage);
+    }
+
     public function update(int $id, array $data)
     {
         return $this->repo->update($id, $data);
