@@ -61,4 +61,9 @@ class PontoTuristicoService
 
         return $this->repo->update($pontoId, ['nota_media' => $media]);
     }
+
+    public function filtrar(array $filters)
+    {
+        return $this->repo->filtrar($filters);
+    }
 }

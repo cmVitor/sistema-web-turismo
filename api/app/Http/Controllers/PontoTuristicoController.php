@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PontoTuristicoRequest;
 use App\Services\PontoTuristicoService;
+use Illuminate\Http\Request;
 
 class PontoTuristicoController extends Controller
 {
@@ -11,9 +12,16 @@ class PontoTuristicoController extends Controller
         private PontoTuristicoService $service
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->service->paginate());
+        // se não houver filtros → paginate normal
+        if (!$request->hasAny(['cidade', 'avaliacao', 'tipo'])) {
+            return response()->json($this->service->paginate());
+        }
+
+        return response()->json(
+            $this->service->filtrar($request->only(['cidade', 'avaliacao', 'tipo']))
+        );
     }
 
     public function show($id)
