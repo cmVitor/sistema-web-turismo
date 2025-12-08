@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Eloquent\PontoTuristicoRepository;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\ValidationException;
 
 class PontoTuristicoService
@@ -24,6 +25,8 @@ class PontoTuristicoService
 
     public function find(int $id)
     {
+        // aumenta contador no redis
+        Redis::incr("ponto_acessos_{$id}");
         // Cache para acessos frequentes
         return Cache::remember("ponto_{$id}", 60, function () use ($id) {
             return $this->repo->find($id);
@@ -46,6 +49,7 @@ class PontoTuristicoService
 
     public function update(int $id, array $data)
     {
+        Cache::forget("ponto_{$id}");
         return $this->repo->update($id, $data);
     }
 
@@ -65,5 +69,25 @@ class PontoTuristicoService
     public function filtrar(array $filters)
     {
         return $this->repo->filtrar($filters);
+    }
+
+    public function maisAcessados()
+    {
+        $keys = Redis::keys('ponto_acessos_*');
+
+        $result = [];
+
+        foreach ($keys as $key) {
+            $id = str_replace('ponto_acessos_', '', $key);
+            $result[] = [
+                'ponto_id' => $id,
+                'acessos'  => Redis::get($key),
+            ];
+        }
+
+        // ordenar por mais acessos
+        usort($result, fn($a, $b) => $b['acessos'] - $a['acessos']);
+
+        return $result;
     }
 }
