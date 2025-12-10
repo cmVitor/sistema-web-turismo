@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvaliacaoController;
+use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\HospedagemController;
 use App\Http\Controllers\PontoTuristicoController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //Rotas públicas
@@ -14,11 +16,17 @@ Route::get('/pontos',        [PontoTuristicoController::class, 'index']);
 Route::get('/pontos/{id}',   [PontoTuristicoController::class, 'show']);
 
 Route::middleware('auth:api')->group(function () {
-    //Aqui as que precisa de authenticação
+    Route::post('/favoritos', [FavoritoController::class, 'store']);
+    Route::delete('/favoritos/{id}', [FavoritoController::class, 'destroy']);
+    Route::post('/pontos', [PontoTuristicoController::class, 'store']);
 });
 Route::get('/me', [AuthController::class, 'me']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/refresh', [AuthController::class, 'refresh']);
+
+Route::get('/usuarios', [UserController::class, 'index']);
+Route::put('/usuarios/{id}', [UserController::class, 'update']);        
+Route::delete('/usuarios/{id}', [UserController::class, 'destroy']);
 
 Route::post('/pontos',              [PontoTuristicoController::class, 'store']);
 Route::put('/pontos/{id}',          [PontoTuristicoController::class, 'update']);
@@ -33,6 +41,8 @@ Route::get('/avaliacoes',          [AvaliacaoController::class, 'index']);
 Route::post('/avaliacoes',          [AvaliacaoController::class, 'store']);
 Route::put('/avaliacoes/{id}',      [AvaliacaoController::class, 'update']);
 Route::delete('/avaliacoes/{id}',   [AvaliacaoController::class, 'destroy']);
+
+Route::get('/favoritos/{usuario_id}', [FavoritoController::class, 'listByUser']);
 
 Route::middleware('auth:api', 'admin')->group(function () {
     //Aqui as rotas protegidas apenas para admins

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PontoTuristicoRequest;
 use App\Services\PontoTuristicoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PontoTuristicoController extends Controller
 {
@@ -31,8 +32,11 @@ class PontoTuristicoController extends Controller
 
     public function store(PontoTuristicoRequest $request)
     {
+        $data = $request->validated();
+        $data['criado_por'] = Auth::id();
+
         return response()->json(
-            $this->service->create($request->validated()),
+            $this->service->create($data),
             201
         );
     }
