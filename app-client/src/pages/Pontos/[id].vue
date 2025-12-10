@@ -87,18 +87,7 @@
       <!-- COMENTÁRIOS -->
       <h2 class="text-h5 mb-4">Comentários</h2>
 
-      <v-row v-if="comentarios.length === 0">
-        <v-col cols="12" class="text-grey"> Nenhum comentário ainda. </v-col>
-      </v-row>
-
-      <v-row v-else>
-        <v-col cols="12" v-for="c in comentarios" :key="c.id">
-          <v-card class="pa-3 mb-2" elevation="3">
-            <strong>{{ c.usuario }}</strong>
-            <p class="text-grey">{{ c.texto }}</p>
-          </v-card>
-        </v-col>
-      </v-row>
+      <ComentariosList :pontoId="Number(ponto.id)"/>
 
       <v-divider class="my-6" />
 
@@ -159,8 +148,12 @@ import { useRoute, useRouter } from "vue-router";
 import api from "@/services/api";
 import { computed } from "vue";
 import { useAuthStore } from "@/stores/authStore";
+import ComentariosList from "@/components/Comentarios/ComentarioList.vue";
 
 export default defineComponent({
+  components: {
+    ComentariosList,
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -170,7 +163,7 @@ export default defineComponent({
     const loading = ref(true);
 
     const ponto = reactive<any>({});
-    const comentarios = ref<any[]>([]);
+    // const comentarios = ref<any[]>([]);
     const hospedagens = ref<any[]>([]);
 
     const novaAvaliacao = reactive({
@@ -193,14 +186,14 @@ export default defineComponent({
         Object.assign(ponto, pontoRes.data);
         hospedagens.value = hospedagemRes.data;
 
-        // comentários (mock por enquanto)
-        comentarios.value = [
-          {
-            id: 1,
-            usuario: "Vitor Martins",
-            texto: "Gostei muito desse ponto turístico!!!",
-          },
-        ];
+        // // comentários (mock por enquanto)
+        // comentarios.value = [
+        //   {
+        //     id: 1,
+        //     usuario: "Vitor Martins",
+        //     texto: "Gostei muito desse ponto turístico!!!",
+        //   },
+        // ];
       } finally {
         loading.value = false;
       }
@@ -243,7 +236,7 @@ export default defineComponent({
       loading,
       ponto,
       googleMapsUrl,
-      comentarios,
+      // comentarios,
       hospedagens,
       novaAvaliacao,
       enviarAvaliacao,

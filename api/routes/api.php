@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvaliacaoController;
+use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\HospedagemController;
 use App\Http\Controllers\PontoTuristicoController;
@@ -46,6 +47,9 @@ Route::get('/favoritos/{usuario_id}', [FavoritoController::class, 'listByUser'])
 
 Route::get('/pontos/{id}/hospedagens',[HospedagemController::class, 'listarPorPonto']);
 Route::get('/pontos/mais-acessados',[PontoTuristicoController::class, 'maisAcessados']);
+
+Route::get('/pontos/{id}/comentarios', [ComentarioController::class, 'index']);
+Route::post('/pontos/{id}/comentarios', [ComentarioController::class, 'store']);
 
 Route::middleware('auth:api', 'admin')->group(function () {
     //Aqui as rotas protegidas apenas para admins

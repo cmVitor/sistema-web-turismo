@@ -461,3 +461,210 @@ A utilização do Redis neste projeto permitiu:
     
 
 Essa arquitetura segue boas práticas modernas de desenvolvimento backend, separando **persistência de dados**, **cache** e **métricas** de forma clara e organizada.
+
+---
+
+# 📦 Persistência de Comentários e Imagens com MongoDB
+
+## 📌 Visão Geral
+
+Neste projeto, o **MongoDB** foi utilizado para armazenar **comentários e imagens associadas aos pontos turísticos**.  
+Essa decisão complementa o uso do **PostgreSQL**, adotando uma **arquitetura híbrida de persistência de dados**, onde cada banco é utilizado de acordo com o tipo de dado e sua finalidade.
+
+----------
+
+## 🎯 Por que utilizar MongoDB?
+
+Os comentários possuem características que **não se encaixam bem em um banco relacional tradicional**, como:
+
+-   Estrutura flexível
+    
+-   Quantidade variável de imagens
+    
+-   Campos opcionais
+    
+-   Possível evolução futura (curtidas, respostas, denúncias, etc.)
+    
+
+### ✅ MongoDB é ideal porque:
+
+-   Armazena dados **sem esquema rígido**
+    
+-   Permite **arrays nativos** (ex: múltiplas imagens)
+    
+-   Facilita **escalabilidade horizontal**
+    
+-   É excelente para dados **não estruturados ou semi-estruturados**
+    
+
+----------
+
+## 🆚 Por que não apenas PostgreSQL?
+| Aspecto | PostgreSQL | MongoDB |
+|--------|------------|---------|
+| Estrutura fixa | ✅ | ❌ |
+| Dados flexíveis | ❌ | ✅ |
+| Arrays nativos | Limitado | ✅ |
+| Evolução do modelo | Custosa | Simples |
+| Comentários com imagens | Complexo | Natural |
+👉 **Conclusão:**  
+PostgreSQL é usado para **dados críticos e relacionais**  
+MongoDB é usado para **conteúdo dinâmico e flexível**
+
+----------
+
+## 🧩 Arquitetura adotada
+
+`PostgreSQL
+ ├── usuários
+ ├── pontos_turisticos
+ ├── hospedagens
+ └── avaliações
+
+MongoDB
+ └── comentarios
+      ├── texto
+      ├── imagens[] ├── usuario
+      └── ponto_id` 
+
+----------
+
+## 📄 Estrutura do Documento no MongoDB
+
+Cada comentário é armazenado como um **documento independente**:
+
+````
+{
+  "_id": "65a9f...",
+  "ponto_id": 1,
+  "usuario_id": 3,
+  "usuario_nome": "Vitor Martins",
+  "texto": "Lugar incrível, vale muito a visita!",
+  "imagens": [
+    "http://localhost:8000/storage/comentarios/img1.jpg",
+    "http://localhost:8000/storage/comentarios/img2.jpg"
+  ],
+  "created_at": "2025-12-10T18:32:11Z"
+}
+
+````
+
+
+----------
+
+## 🔗 Relacionamento entre MongoDB e PostgreSQL
+
+O relacionamento entre os dados é feito de forma **lógica**, e não por chave estrangeira:
+
+-   `ponto_id` → referencia `pontos_turisticos.id` (PostgreSQL)
+    
+-   `usuario_id` → referencia `usuarios.id` (PostgreSQL)
+    
+
+✅ Isso garante:
+
+-   Independência entre bancos
+    
+-   Melhor desempenho
+    
+-   Facilidade de manutenção
+    
+
+----------
+
+## ⚙️ Implementação no Backend (Laravel)
+
+### Model MongoDB
+````
+use Jenssegers\Mongodb\Eloquent\Model;
+
+class ComentarioMongo extends Model
+{
+    protected $connection = 'mongodb';
+    protected $collection = 'comentarios';
+
+    protected $fillable = [
+        'ponto_id',
+        'usuario_id',
+        'usuario_nome',
+        'texto',
+        'imagens',
+        'created_at'
+    ];
+}
+
+````
+
+----------
+
+### Controller de Comentários
+````
+public function store(StoreComentarioRequest $request, $pontoId)
+{
+    $imagensUrls = [];
+
+    if ($request->hasFile('imagens')) {
+        foreach ($request->file('imagens') as $file) {
+            $path = $file->store('comentarios', 'public');
+            $imagensUrls[] = Storage::disk('public')->url($path);
+        }
+    }
+
+    return ComentarioMongo::create([
+        'ponto_id'     => (int) $pontoId,
+        'usuario_id'   => $request->user()->id,
+        'usuario_nome' => $request->user()->login,
+        'texto'        => $request->texto,
+        'imagens'      => $imagensUrls,
+        'created_at'   => now(),
+    ]);
+}
+
+````
+
+----------
+
+## 🖼️ Armazenamento de Imagens
+
+-   As imagens **não são armazenadas no MongoDB**
+    
+-   Apenas as **URLs** são salvas
+    
+-   Os arquivos ficam no **storage público do Laravel**
+    
+
+`storage/app/public/comentarios/` 
+
+✅ Essa abordagem:
+
+-   Evita sobrecarregar o banco
+    
+-   Facilita CDN ou S3 no futuro
+    
+-   Mantém alta performance
+    
+
+----------
+
+## ✅ Benefícios da Abordagem Híbrida
+
+✔ Uso do banco certo para o dado certo  
+✔ Melhor performance  
+✔ Escalabilidade  
+✔ Código mais limpo  
+✔ Arquitetura moderna  
+✔ Aderente ao tema **Persistência de Dados**
+
+----------
+
+## 🧠 Conclusão
+
+O uso do MongoDB neste projeto demonstra uma aplicação prática de **poliglot persistence**, onde múltiplas tecnologias de banco de dados coexistem de forma estratégica, cada uma atendendo melhor a um tipo específico de informação.
+
+Essa decisão melhora:
+
+-   Manutenibilidade
+    
+-   Performance
+    
+-   Evolução futura do sistema
