@@ -15,13 +15,10 @@ class PontoTuristicoController extends Controller
 
     public function index(Request $request)
     {
-        // se não houver filtros → paginate normal
-        if (!$request->hasAny(['cidade', 'avaliacao', 'tipo'])) {
-            return response()->json($this->service->paginate());
-        }
-
         return response()->json(
-            $this->service->filtrar($request->only(['cidade', 'avaliacao', 'tipo']))
+            $this->service->filtrar(
+                $request->only(['nome', 'cidade', 'nota'])
+            )
         );
     }
 
@@ -52,5 +49,12 @@ class PontoTuristicoController extends Controller
     {
         $this->service->delete($id);
         return response()->json(null, 204);
+    }
+
+    public function maisAcessados()
+    {
+        return response()->json(
+            $this->service->listarMaisAcessados()
+        );
     }
 }

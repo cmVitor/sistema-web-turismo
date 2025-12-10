@@ -11,4 +11,9 @@ class HospedagemRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function findByPonto(int $pontoId)
+    {
+        return Hospedagem::where('ponto_id', $pontoId)->get();
+    }
 }

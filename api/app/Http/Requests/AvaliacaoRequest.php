@@ -23,7 +23,6 @@ class AvaliacaoRequest extends FormRequest
     {
         return [
             'ponto_id'   => ['required', 'exists:pontos_turisticos,id'],
-            'usuario_id' => ['required', 'exists:users,id'],
             'nota'       => ['required', 'integer', 'between:1,5'],
             'comentario' => ['nullable', 'string'],
         ];

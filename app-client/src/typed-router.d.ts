@@ -21,7 +21,11 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/favoritos': RouteRecordInfo<'/favoritos', '/favoritos', Record<never, never>, Record<never, never>>,
     '/home': RouteRecordInfo<'/home', '/home', Record<never, never>, Record<never, never>>,
+    '/Hospedagens/': RouteRecordInfo<'/Hospedagens/', '/Hospedagens', Record<never, never>, Record<never, never>>,
+    '/Hospedagens/nova': RouteRecordInfo<'/Hospedagens/nova', '/Hospedagens/nova', Record<never, never>, Record<never, never>>,
     '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
+    '/MaisAcessados': RouteRecordInfo<'/MaisAcessados', '/MaisAcessados', Record<never, never>, Record<never, never>>,
+    '/Pontos/[id]': RouteRecordInfo<'/Pontos/[id]', '/Pontos/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/Pontos/novo': RouteRecordInfo<'/Pontos/novo', '/Pontos/novo', Record<never, never>, Record<never, never>>,
     '/profile': RouteRecordInfo<'/profile', '/profile', Record<never, never>, Record<never, never>>,
     '/Usuarios/': RouteRecordInfo<'/Usuarios/', '/Usuarios', Record<never, never>, Record<never, never>>,
@@ -51,8 +55,24 @@ declare module 'vue-router/auto-routes' {
       routes: '/home'
       views: never
     }
+    'src/pages/Hospedagens/index.vue': {
+      routes: '/Hospedagens/'
+      views: never
+    }
+    'src/pages/Hospedagens/nova.vue': {
+      routes: '/Hospedagens/nova'
+      views: never
+    }
     'src/pages/login.vue': {
       routes: '/login'
+      views: never
+    }
+    'src/pages/MaisAcessados.vue': {
+      routes: '/MaisAcessados'
+      views: never
+    }
+    'src/pages/Pontos/[id].vue': {
+      routes: '/Pontos/[id]'
       views: never
     }
     'src/pages/Pontos/novo.vue': {

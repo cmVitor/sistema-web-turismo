@@ -31,29 +31,29 @@ class PontoTuristicoRepository extends BaseRepository
     {
         $query = PontoTuristico::query();
 
+        // Filtro por nome
+        if (!empty($filters['nome'])) {
+            $query->where('nome', 'LIKE', '%' . $filters['nome'] . '%');
+        }
+
         // Filtro por cidade
         if (!empty($filters['cidade'])) {
             $query->where('cidade', 'LIKE', '%' . $filters['cidade'] . '%');
         }
 
         // Filtro por avaliação (nota média >= X)
-        if (!empty($filters['avaliacao'])) {
-            $query->where('nota_media', '>=', (int)$filters['avaliacao']);
+        if (!empty($filters['nota'])) {
+            $query->where('nota_media', '>=', (int)$filters['nota']);
         }
-
-        // // Filtro por tipo de hospedagem
-        // if (!empty($filters['tipo'])) {
-        //     $query->whereHas('hospedagens', function ($q) use ($filters) {
-        //         $q->where('tipo', $filters['tipo']);
-        //     });
-        // }
-
-        // Filtro por nome
-        if (!empty($filters['nome'])) {
-            $query->where('nome', 'LIKE', '%' . $filters['nome'] . '%');
-        }
-
 
         return $query->paginate(10);
+    }
+    public function findManyByIdsOrdered(array $ids)
+    {
+        $pontos = PontoTuristico::whereIn('id', $ids)->get();
+
+        return $pontos->sortBy(function ($ponto) use ($ids) {
+            return array_search($ponto->id, $ids);
+        })->values();
     }
 }

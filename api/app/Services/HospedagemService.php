@@ -29,4 +29,9 @@ class HospedagemService
     {
         return $this->repo->delete($id);
     }
+
+    public function listarPorPonto(int $pontoId)
+    {
+        return $this->repo->findByPonto($pontoId);
+    }
 }

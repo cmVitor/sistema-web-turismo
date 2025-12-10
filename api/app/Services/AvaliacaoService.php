@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Eloquent\AvaliacaoRepository;
 use App\Services\PontoTuristicoService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class AvaliacaoService
@@ -39,6 +40,8 @@ class AvaliacaoService
 
         // 4. atualizar média
         $this->pontosService->atualizarMediaNotas($data['ponto_id']);
+
+        Cache::forget("ponto_{$data['ponto_id']}");
 
         return $avaliacao;
     }

@@ -19,6 +19,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/favoritos', [FavoritoController::class, 'store']);
     Route::delete('/favoritos/{id}', [FavoritoController::class, 'destroy']);
     Route::post('/pontos', [PontoTuristicoController::class, 'store']);
+    Route::post('/avaliacoes',          [AvaliacaoController::class, 'store']);
 });
 Route::get('/me', [AuthController::class, 'me']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -38,11 +39,13 @@ Route::put('/hospedagens/{id}',     [HospedagemController::class, 'update']);
 Route::delete('/hospedagens/{id}',  [HospedagemController::class, 'destroy']);
 
 Route::get('/avaliacoes',          [AvaliacaoController::class, 'index']);
-Route::post('/avaliacoes',          [AvaliacaoController::class, 'store']);
 Route::put('/avaliacoes/{id}',      [AvaliacaoController::class, 'update']);
 Route::delete('/avaliacoes/{id}',   [AvaliacaoController::class, 'destroy']);
 
 Route::get('/favoritos/{usuario_id}', [FavoritoController::class, 'listByUser']);
+
+Route::get('/pontos/{id}/hospedagens',[HospedagemController::class, 'listarPorPonto']);
+Route::get('/pontos/mais-acessados',[PontoTuristicoController::class, 'maisAcessados']);
 
 Route::middleware('auth:api', 'admin')->group(function () {
     //Aqui as rotas protegidas apenas para admins

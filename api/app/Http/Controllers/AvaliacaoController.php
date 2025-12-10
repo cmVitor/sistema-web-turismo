@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AvaliacaoRequest;
 use App\Services\AvaliacaoService;
+use Illuminate\Support\Facades\Auth;
 
 class AvaliacaoController extends Controller
 {
@@ -18,8 +19,11 @@ class AvaliacaoController extends Controller
 
     public function store(AvaliacaoRequest $request)
     {
+        $data = $request->validated();
+        $data['usuario_id'] = Auth::id();
+
         return response()->json(
-            $this->service->create($request->validated()),
+            $this->service->create($data),
             201
         );
     }

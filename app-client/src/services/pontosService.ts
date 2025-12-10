@@ -26,4 +26,11 @@ export class PontosService {
       throw error;
     }
   }
+
+  static async fetchMaisAcessados() {
+    const response = await api.get(
+      "http://localhost:8000/api/pontos/mais-acessados"
+    );
+    return response.data;
+  }
 }

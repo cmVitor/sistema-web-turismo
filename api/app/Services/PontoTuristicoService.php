@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PontoTuristico;
 use App\Repositories\Eloquent\PontoTuristicoRepository;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -71,23 +72,25 @@ class PontoTuristicoService
         return $this->repo->filtrar($filters);
     }
 
-    public function maisAcessados()
+    public function listarMaisAcessados(int $limit = 10)
     {
         $keys = Redis::keys('ponto_acessos_*');
 
-        $result = [];
-
-        foreach ($keys as $key) {
-            $id = str_replace('ponto_acessos_', '', $key);
-            $result[] = [
-                'ponto_id' => $id,
-                'acessos'  => Redis::get($key),
-            ];
+        if (empty($keys)) {
+            return [];
         }
 
-        // ordenar por mais acessos
-        usort($result, fn($a, $b) => $b['acessos'] - $a['acessos']);
+        $acessos = [];
 
-        return $result;
+        foreach ($keys as $key) {
+            $id = (int) str_replace('ponto_acessos_', '', $key);
+            $acessos[$id] = (int) Redis::get($key);
+        }
+
+        arsort($acessos);
+
+        $ids = array_slice(array_keys($acessos), 0, $limit);
+
+        return $this->repo->findManyByIdsOrdered($ids);
     }
 }

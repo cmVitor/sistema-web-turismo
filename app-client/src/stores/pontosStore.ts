@@ -57,5 +57,14 @@ export const usePontosStore = defineStore("pontos", {
     setFiltro(campo: string, valor: string) {
       (this.filtros as any)[campo] = valor;
     },
+
+    async fetchMaisAcessados() {
+      try {
+        this.loading = true;
+        this.pontos = await PontosService.fetchMaisAcessados();
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

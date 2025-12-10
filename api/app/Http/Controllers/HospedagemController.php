@@ -36,4 +36,11 @@ class HospedagemController extends Controller
         $this->service->delete($id);
         return response()->json(null, 204);
     }
+
+    public function listarPorPonto(int $id)
+    {
+        return response()->json(
+            $this->service->listarPorPonto($id)
+        );
+    }
 }

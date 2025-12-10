@@ -9,7 +9,7 @@
         <v-text-field
           label="Nome"
           v-model="store.filtros.nome"
-          @input="buscar"
+          @update:model-value="buscar"
           clearable
           variant="outlined"
           rounded
@@ -20,7 +20,7 @@
         <v-text-field
           label="Cidade"
           v-model="store.filtros.cidade"
-          @input="buscar"
+          @update:model-value="buscar"
           clearable
           variant="outlined"
           rounded
@@ -32,7 +32,7 @@
           label="Nota mínima"
           type="number"
           v-model="store.filtros.nota"
-          @input="buscar"
+          @update:model-value="buscar"
           clearable
           variant="outlined"
           rounded
@@ -40,7 +40,7 @@
       </v-col>
     </v-row>
 
-    <v-row class="mb-4">
+    <v-row class="mb-4" v-if="auth.userRole === 'ADMIN'">
       <v-col cols="12" class="text-center">
         <v-btn
           color="primary"
@@ -89,12 +89,14 @@
 import { defineComponent, onMounted } from "vue";
 import { usePontosStore } from "@/stores/pontosStore";
 import PontoCard from "@/components/Pontos/PontoCard.vue";
+import { useAuthStore } from '@/stores/authStore'
 
 export default defineComponent({
   components: { PontoCard },
 
   setup() {
     const store = usePontosStore();
+    const auth = useAuthStore();
 
     const buscar = () => {
       store.fetchPontos();
@@ -104,7 +106,7 @@ export default defineComponent({
       store.fetchPontos();
     });
 
-    return { store, buscar };
+    return { store, buscar, auth };
   },
 });
 </script>
