@@ -111,6 +111,177 @@ O documento exige **Relacional + NoSQL + Cache**, e todos foram atendidos:
 -   Cache de pontos turísticos mais acessados (Redis)
    
 ----------
+
+## 🗄️ Persistência de Dados com PostgreSQL
+
+## 📌 Visão Geral
+
+O banco de dados **PostgreSQL** é utilizado como **banco de dados relacional principal** da aplicação, sendo responsável pela **persistência permanente dos dados**.  
+Ele armazena informações estruturadas e relacionadas, garantindo **integridade referencial**, **consistência** e **confiabilidade** dos dados.
+
+A aplicação utiliza o **Eloquent ORM (Laravel)** em conjunto com **migrations**, permitindo versionamento do schema e fácil manutenção da estrutura do banco.
+
+----------
+
+## 🧱 Estrutura do Banco de Dados
+
+A modelagem relacional foi implementada por meio de **migrations**, que descrevem de forma explícita a estrutura das tabelas, chaves primárias e relacionamentos.
+
+### 🔹 Principais Entidades Persistidas
+
+-   **Usuários**
+    
+-   **Pontos Turísticos**
+    
+-   **Avaliações**
+    
+-   **Hospedagens**
+    
+-   **Favoritos**
+    
+
+Essas entidades representam os dados essenciais do domínio da aplicação e possuem relacionamentos bem definidos.
+
+----------
+
+## 🛠️ Migrations
+
+As migrations são responsáveis por criar e versionar as tabelas no banco PostgreSQL, permitindo:
+
+-   Controle de versão do schema
+    
+-   Facilidade de evolução do banco
+    
+-   Reprodutibilidade do ambiente
+    
+-   Evitar inconsistências estruturais
+    
+
+### 🔹 Exemplo de Migration (Pontos Turísticos)
+````
+Schema::create('pontos_turisticos', function (Blueprint  $table) {
+
+$table->id();
+
+$table->string('nome');
+$table->text('descricao')->nullable();
+$table->string('cidade');
+$table->string('estado');
+$table->string('pais');
+
+$table->decimal('latitude', 10, 7)->nullable();
+$table->decimal('longitude', 10, 7)->nullable();
+
+$table->string('endereco')->nullable();
+
+$table->foreignId('criado_por')->constrained('users')->restrictOnDelete();
+
+$table->decimal('nota_media', 3, 2)->default(0);
+
+$table->timestamps();
+
+});
+````
+----------
+
+## 🧠 Models e ORM (Eloquent)
+
+Cada tabela do banco possui um **Model Eloquent**, responsável por representar e manipular os dados no código de forma orientada a objetos.
+
+### 🔹 Exemplo de Model
+````
+class  PontoTuristico  extends  Model
+{
+use  HasFactory;
+
+protected  $table = 'pontos_turisticos';
+
+protected  $fillable = [
+'nome',
+'descricao',
+'cidade',
+'estado',
+'pais',
+'latitude',
+'longitude',
+'endereco',
+'criado_por',
+'nota_media',
+];
+
+protected  $casts = [
+'latitude' => 'float',
+'longitude' => 'float',
+'nota_media' => 'float',
+];
+
+public  function  criador()
+{
+return  $this->belongsTo(User::class, 'criado_por');
+}
+
+public  function  hospedagens()
+{
+return  $this->hasMany(Hospedagem::class, 'ponto_id');
+}
+
+public  function  avaliacoes()
+{
+return  $this->hasMany(Avaliacao::class, 'ponto_id');
+}
+}
+}` 
+````
+### ✅ Benefícios do uso de Models
+
+-   Abstração das consultas SQL
+    
+-   Facilita leitura e manutenção do código
+    
+-   Integração natural com relacionamentos
+    
+-   Redução de código repetitivo
+    
+
+----------
+
+## 🔗 Relacionamentos entre Entidades
+
+A aplicação utiliza relacionamentos do tipo:
+
+-   **Um-para-muitos**
+    
+    -   Usuário → Pontos Turísticos
+        
+    -   Ponto Turístico → Avaliações
+        
+    -   Ponto Turístico → Hospedagens
+        
+-   **Muitos-para-muitos**
+    
+    -   Usuário ↔ Pontos Turísticos (Favoritos)
+        
+
+Esses relacionamentos garantem integridade dos dados e refletem corretamente as regras do domínio.
+
+----------
+
+## ✅ Conclusão
+
+O uso do PostgreSQL aliado às **migrations** e **models Eloquent** proporciona uma camada sólida de persistência de dados, garantindo:
+
+-   Estrutura consistente
+    
+-   Facilidade de manutenção
+    
+-   Escalabilidade do banco
+    
+-   Clareza na modelagem relacional
+    
+
+Essa abordagem segue boas práticas de desenvolvimento de software orientado à persistência de dados, atendendo aos requisitos da disciplina.
+
+----------
 # 🚀 Uso do Redis na Aplicação
 
 ## 📌 Visão Geral
