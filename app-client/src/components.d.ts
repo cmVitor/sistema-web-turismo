@@ -13,6 +13,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     AddButton: typeof import('./components/AddButton.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    ComentarioForm: typeof import('./components/Comentarios/ComentarioForm.vue')['default']
+    ComentarioList: typeof import('./components/Comentarios/ComentarioList.vue')['default']
     DashBoard: typeof import('./components/DashBoard.vue')['default']
     Header: typeof import('./components/Header/Header.vue')['default']
     HeaderAppBar: typeof import('./components/Header/HeaderAppBar.vue')['default']
