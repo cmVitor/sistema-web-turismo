@@ -70,7 +70,7 @@
         <v-col cols="12">
           <v-textarea
             v-model="novaAvaliacao.comentario"
-            label="Comentário"
+            label="Comentário da avaliação"
             rows="3"
           />
         </v-col>
